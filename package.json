@@ -1,5 +1,5 @@
 {
-  "name": "ecommerce-api",
+  "name": "@sangtran13/ecommerce-api",
   "version": "1.0.0",
   "type": "module",
   "description": "",
@@ -13,6 +13,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
