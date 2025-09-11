@@ -5,10 +5,16 @@
   ],
   "plugins": [
     ["@semantic-release/commit-analyzer", {
-      "preset": "conventionalcommits"
+      "preset": "conventionalcommits",
+      "releaseRules": [
+        {"type": "refactor", "release": "patch"}
+      ]
     }],
     ["@semantic-release/release-notes-generator", {
-      "preset": "conventionalcommits"
+      "preset": "conventionalcommits",
+      "releaseRules": [
+        {"type": "refactor", "release": "patch"}
+      ]
     }],
     ["@semantic-release/changelog", {
       "changelogFile": "CHANGELOG.md"
