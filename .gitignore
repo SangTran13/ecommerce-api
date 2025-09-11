@@ -1,0 +1,11 @@
+# Node modules
+node_modules/
+
+# Environment variable files
+config.env
+
+# Logs
+.vscode/logs
+logs/*.log
+npm-debug.log*
+.vscode/
