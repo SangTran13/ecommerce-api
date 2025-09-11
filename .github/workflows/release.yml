@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release | tee /tmp/semrel.log
+
+      - name: Read version from package.json
+        id: get_version
+        run: node -e "console.log('version=' + require('./package.json').version)" >> $GITHUB_OUTPUT
+
+      - name: Create PR with updated CHANGELOG and package.json
+        uses: peter-evans/create-pull-request@v6
+        with:
+          # Use a PAT if repo disallows GITHUB_TOKEN to create PRs
+          token: ${{ secrets.CREATE_PR_TOKEN || secrets.GITHUB_TOKEN }}
+          commit-message: |
+            chore(release-assets): update version & changelog for v${{ steps.get_version.outputs.version }}
+          title: "chore(release-assets): update version & changelog for v${{ steps.get_version.outputs.version }}"
+          body: |
+            Auto-generated PR with updated `package.json` and `CHANGELOG.md` after running semantic-release.
+
+            - Base branch: `${{ github.ref_name }}`
+            - Version: `${{ steps.get_version.outputs.version }}`
+          branch: chore/release-assets-v${{ steps.get_version.outputs.version }}-${{ github.run_number }}
+          base: main
+          add-paths: |
+            CHANGELOG.md
+            package.json
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          signoff: false
+          delete-branch: true
+
