@@ -1,3 +1,9 @@
+## <small>1.1.1 (2025-09-11)</small>
+
+* refactor: test conventional commit (#38) ([9aa5dda](https://github.com/SangTran13/ecommerce-api/commit/9aa5dda)), closes [#38](https://github.com/SangTran13/ecommerce-api/issues/38)
+* Merge pull request #36 from SangTran13/chore/release-assets/v1.1.0 ([821a04e](https://github.com/SangTran13/ecommerce-api/commit/821a04e)), closes [#36](https://github.com/SangTran13/ecommerce-api/issues/36)
+* chore(release-assets): update version & changelog for v1.1.0 ([568bc1a](https://github.com/SangTran13/ecommerce-api/commit/568bc1a))
+
 ## 1.1.0 (2025-09-11)
 
 * Merge pull request #31 from SangTran13/chore/release-assets-v1.0.3-4 ([d3a8b6c](https://github.com/SangTran13/ecommerce-api/commit/d3a8b6c)), closes [#31](https://github.com/SangTran13/ecommerce-api/issues/31)
