@@ -52,7 +52,6 @@ jobs:
 
             - Base branch: `${{ github.ref_name }}`
             - Version: `${{ steps.get_version.outputs.version }}`
-          branch: chore/release-assets-v${{ steps.get_version.outputs.version }}-${{ github.run_number }}
           # Use a stable branch name so repeated runs update the same PR
           branch: chore/release-assets/v${{ steps.get_version.outputs.version }}
           base: main
