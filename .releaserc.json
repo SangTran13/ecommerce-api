@@ -14,8 +14,7 @@
       "changelogFile": "CHANGELOG.md"
     }],
     ["@semantic-release/npm", {
-      "pkgRoot": ".",
-      "tarballDir": false
+      "pkgRoot": "."
     }],
     ["@semantic-release/github", {
       "assets": []
