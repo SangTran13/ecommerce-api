@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - dev
   workflow_dispatch:
 
 permissions:
@@ -42,7 +41,8 @@ jobs:
       - name: Create PR with updated CHANGELOG and package.json
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Use a PAT if repo disallows GITHUB_TOKEN to create PRs
+          token: ${{ secrets.CREATE_PR_TOKEN || secrets.GITHUB_TOKEN }}
           commit-message: |
             chore(release-assets): update version & changelog for v${{ steps.get_version.outputs.version }}
           title: "chore(release-assets): update version & changelog for v${{ steps.get_version.outputs.version }}"
@@ -52,7 +52,7 @@ jobs:
             - Base branch: `${{ github.ref_name }}`
             - Version: `${{ steps.get_version.outputs.version }}`
           branch: chore/release-assets-v${{ steps.get_version.outputs.version }}-${{ github.run_number }}
-          base: ${{ github.ref_name }}
+          base: main
           add-paths: |
             CHANGELOG.md
             package.json
