@@ -7,7 +7,8 @@ import ApiFeatures from "../utils/apiFeatures.js";
 import qs from "qs";
 import { createOne, updateOne, deleteOne } from "./handlersFactory.js";
 
-export const setCategoryIdToBody = (req, _res, next) => {
+
+export const setCategoryIdToBody = (req, res, next) => {
   // If the request is coming from a nested route, set the category from params
   if (!req.body.category && req.params.categoryId) {
     req.body.category = req.params.categoryId;
@@ -17,7 +18,7 @@ export const setCategoryIdToBody = (req, _res, next) => {
 
 // Nested route - to get subCategories by category ID
 // GET /api/v1/categories/:categoryId/sub-categories
-export const getSubCategoriesByCategory = (req, _res, next) => {
+export const getSubCategoriesByCategory = (req, res, next) => {
   let filterObject = {};
   if (req.params.categoryId) filterObject = { category: req.params.categoryId };
   req.filterObject = filterObject;
@@ -82,6 +83,7 @@ export const getSubCategoryById = asyncHandler(async (req, res, next) => {
 // @route POST /api/v1/sub-categories
 // @access Public
 export const createSubCategory = createOne(SubCategory);
+
 
 // @desc Update specific subCategory by ID
 // @route PUT /api/v1/sub-categories/:id

@@ -55,6 +55,7 @@ export const getBrandById = asyncHandler(async (req, res, next) => {
 // @access Public
 export const createBrand = createOne(Brand);
 
+
 // @desc Update specific brand by ID
 // @route PUT /api/v1/brands/:id
 // @access Public
