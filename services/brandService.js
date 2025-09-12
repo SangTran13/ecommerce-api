@@ -63,4 +63,8 @@ export const updateBrand = updateOne(Brand);
 // @desc Delete specific brand by ID
 // @route DELETE /api/v1/brands/:id
 // @access Public
+<<<<<<< HEAD
 export const deleteBrand = deleteOne(Brand);
+=======
+export const deleteBrand = deleteOne(Brand);
+>>>>>>> 64e5adf (feat: complete ecommerce API with CRUD, validation, filtering, and pagination)
