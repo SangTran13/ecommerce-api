@@ -23,6 +23,9 @@ const subCategorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Ensure case-insensitive uniqueness via slug
+subCategorySchema.index({ category: 1, slug: 1 }, { unique: true });
+
 const SubCategory = mongoose.model("SubCategory", subCategorySchema);
 
 export default SubCategory;

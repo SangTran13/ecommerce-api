@@ -20,6 +20,9 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Ensure case-insensitive uniqueness via slug
+categorySchema.index({ slug: 1 }, { unique: true });
+
 const categoryModel = mongoose.model("Category", categorySchema);
 
 export default categoryModel;
