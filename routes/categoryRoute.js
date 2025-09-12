@@ -4,8 +4,6 @@ import {
   createCategoryValidator,
   updateCategoryValidator,
   deleteCategoryValidator,
-  getSubCategoriesByCategoryValidator,
-  deleteSubCategoriesByCategoryValidator,
 } from "../utils/validators/categoryValidator.js";
 
 import {
@@ -14,11 +12,14 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
-  getSubCategoriesByCategory,
-  deleteSubCategoriesByCategory,
 } from "../services/categoryService.js";
 
+import subCategoriesRoute from "./subCategoryRoute.js";
+
 const router = express.Router();
+
+// Nested route for sub-categories under a specific category
+router.use("/:categoryId/sub-categories", subCategoriesRoute);
 
 // Define routes for getting all categories and creating a new category
 router
@@ -30,13 +31,5 @@ router
   .get(getCategoryValidator, getCategoryById)
   .put(updateCategoryValidator, updateCategory)
   .delete(deleteCategoryValidator, deleteCategory);
-
-router
-  .route("/:categoryId/sub-categories")
-  .get(getSubCategoriesByCategoryValidator, getSubCategoriesByCategory)
-  .delete(
-    deleteSubCategoriesByCategoryValidator,
-    deleteSubCategoriesByCategory
-  );
 
 export default router;

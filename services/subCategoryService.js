@@ -5,16 +5,32 @@ import ApiError from "../utils/apiError.js";
 import Category from "../models/categoryModel.js";
 import SubCategory from "../models/subCategoryModel.js";
 
+export const setCategoryIdToBody = (req, res, next) => {
+  // If the request is coming from a nested route, set the category from params
+  if (!req.body.category && req.params.categoryId) {
+    req.body.category = req.params.categoryId;
+  }
+  next();
+};
+
+// Nested route - to get subCategories by category ID
+// GET /api/v1/categories/:categoryId/sub-categories
+export const getSubCategoriesByCategory = (req, res, next) => {
+  let filterObject = {};
+  if (req.params.categoryId) filterObject = { category: req.params.categoryId };
+  req.filterObject = filterObject;
+  next();
+};
+
 // @description Get all subCategories
 // @route GET /api/v1/sub-categories?page=...&limit=...
 // @access Public
-
 export const getSubCategories = asyncHandler(async (req, res) => {
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 5;
   const skip = (page - 1) * limit;
 
-  const subCategories = await SubCategory.find({})
+  const subCategories = await SubCategory.find(req.filterObject)
     .skip(skip)
     .limit(limit)
     .populate({
@@ -53,7 +69,7 @@ export const createSubCategory = asyncHandler(async (req, res, next) => {
   const { name, category } = req.body;
 
   const existingSubCategory = await SubCategory.findOne({
-    name,
+    slug: slugify(name),
     category,
   }).lean();
   if (existingSubCategory) {
@@ -93,7 +109,7 @@ export const updateSubCategory = asyncHandler(async (req, res, next) => {
   }
 
   const existingSubCategory = await SubCategory.findOne({
-    name,
+    slug: slugify(name),
     category,
   }).lean();
   if (
@@ -127,3 +143,21 @@ export const deleteSubCategory = asyncHandler(async (req, res, next) => {
     message: "SubCategory deleted successfully",
   });
 });
+
+// @desc Delete all sub categories by category ID
+// @route DELETE /api/v1/categories/:categoryId/sub-categories
+// @access Public
+export const deleteSubCategoriesByCategory = asyncHandler(
+  async (req, res, next) => {
+    const categoryId = req.params.categoryId;
+    const categoryExists = await Category.findById(categoryId).lean();
+    if (!categoryExists) {
+      return next(new ApiError("Category not found", 404));
+    }
+    const result = await SubCategory.deleteMany({ category: categoryId });
+    res.status(200).json({
+      success: true,
+      message: `${result.deletedCount} sub-categories deleted successfully`,
+    });
+  }
+);

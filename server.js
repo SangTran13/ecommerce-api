@@ -10,6 +10,7 @@ import globalError from "./middlewares/errorMiddleware.js";
 import dbConnection from "./config/database.js";
 import categoryRoute from "./routes/categoryRoute.js";
 import subCategoryRoute from "./routes/subCategoryRoute.js";
+import brandRoute from "./routes/brandRoute.js";
 
 // Connect to the database
 dbConnection();
@@ -29,6 +30,7 @@ if (process.env.NODE_ENV === "development") {
 // Mount the category routes
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/sub-categories", subCategoryRoute);
+app.use("/api/v1/brands", brandRoute);
 
 // Handle undefined routes
 app.use((req, res, next) => {
