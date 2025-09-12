@@ -60,6 +60,7 @@ export const createCategory = createOne(Category);
 // @route PUT /api/v1/categories/:id
 // @access Public
 export const updateCategory = updateOne(Category);
+
 // @desc Delete specific category by ID
 // @route DELETE /api/v1/categories/:id
 // @access Public
