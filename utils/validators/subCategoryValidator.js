@@ -30,9 +30,15 @@ const deleteSubCategoryValidator = [
   validatorMiddleware,
 ];
 
+const deleteSubCategoriesByCategoryValidator = [
+  check("categoryId").isMongoId().withMessage("Invalid category ID format"),
+  validatorMiddleware,
+];
+
 export {
   getSubCategoryValidator,
   createSubCategoryValidator,
   updateSubCategoryValidator,
-  deleteSubCategoryValidator
+  deleteSubCategoryValidator,
+  deleteSubCategoriesByCategoryValidator,
 };

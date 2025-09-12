@@ -41,7 +41,9 @@ export const getCategoryById = asyncHandler(async (req, res, next) => {
 export const createCategory = asyncHandler(async (req, res, next) => {
   const { name, image } = req.body;
 
-  const existingCategory = await Category.findOne({ name }).lean();
+  const existingCategory = await Category.findOne({
+    slug: slugify(name),
+  }).lean();
   if (existingCategory) {
     return next(new ApiError("Category name already exists", 400));
   }
@@ -66,7 +68,7 @@ export const updateCategory = asyncHandler(async (req, res, next) => {
     return next(new ApiError("Category not found", 404));
   }
 
-  const existingCategory = await Category.findOne({ name }).lean();
+  const existingCategory = await Category.findOne({ slug: slugify(name) }).lean();
   if (existingCategory && existingCategory._id.toString() !== req.params.id) {
     return next(new ApiError("Category name already exists", 400));
   }
@@ -96,34 +98,3 @@ export const deleteCategory = asyncHandler(async (req, res, next) => {
     message: "Category deleted successfully",
   });
 });
-
-// @desc Get sub categories by category ID
-// @route GET /api/v1/categories/:categoryId/sub-categories
-// @access Public
-export const getSubCategoriesByCategory = asyncHandler(
-  async (req, res, next) => {
-    const categoryId = req.params.categoryId;
-    const subCategories = await SubCategory.find({ category: categoryId })
-      .populate("category", "name -_id")
-      .lean();
-    res.status(200).json({
-      success: true,
-      results: subCategories.length,
-      subCategories,
-    });
-  }
-);
-
-// @desc Delete all sub categories by category ID
-// @route DELETE /api/v1/categories/:categoryId/sub-categories
-// @access Public
-export const deleteSubCategoriesByCategory = asyncHandler(
-  async (req, res, next) => {
-    const categoryId = req.params.categoryId;
-    const result = await SubCategory.deleteMany({ category: categoryId });
-    res.status(200).json({
-      success: true,
-      message: `${result.deletedCount} sub-categories deleted successfully`,
-    });
-  }
-);
