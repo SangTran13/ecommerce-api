@@ -1,21 +1,37 @@
-import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import Brand from "../models/brandModel.js";
 import ApiError from "../utils/apiError.js";
+import ApiFeatures from "../utils/apiFeatures.js";
+import qs from "qs";
+import { createOne, updateOne, deleteOne } from "./handlersFactory.js";
 
 // @description Get all brands
 // @route GET /api/v1/brands?page=...&limit=...
 // @access Public
 export const getBrands = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
-  const skip = (page - 1) * limit;
+  // Parse query string to nested object
+  const query = qs.parse(req._parsedUrl.query);
 
-  const brands = await Brand.find({}).skip(skip).limit(limit).lean();
+  const countApiFeatures = new ApiFeatures(Brand.find(), query)
+    .filter()
+    .searchByKeyword("Brand");
+
+  const documentsCount = await countApiFeatures.mongoQuery.countDocuments();
+
+  const apiFeatures = new ApiFeatures(Brand.find().lean(), query)
+    .filter()
+    .searchByKeyword("Brand")
+    .paginate(documentsCount)
+    .limitFields()
+    .sort();
+
+  // Execute query
+  const { mongoQuery, paginationResult } = apiFeatures;
+  const brands = await mongoQuery;
   res.status(200).json({
     success: true,
     results: brands.length,
-    page,
+    pagination: paginationResult,
     brands,
   });
 });
@@ -37,61 +53,14 @@ export const getBrandById = asyncHandler(async (req, res, next) => {
 // @description Create a new brand
 // @route POST /api/v1/brands
 // @access Public
-export const createBrand = asyncHandler(async (req, res, next) => {
-  const { name, image } = req.body;
-
-  const existingBrand = await Brand.findOne({ slug: slugify(name) }).lean();
-  if (existingBrand) {
-    return next(new ApiError("Brand name already exists", 400));
-  }
-
-  const newBrand = new Brand({ name, slug: slugify(name), image });
-  await newBrand.save();
-  res.status(201).json({
-    success: true,
-    message: "Brand created successfully",
-    brand: newBrand,
-  });
-});
+export const createBrand = createOne(Brand);
 
 // @desc Update specific brand by ID
 // @route PUT /api/v1/brands/:id
 // @access Public
-export const updateBrand = asyncHandler(async (req, res, next) => {
-  const { name, image } = req.body;
-
-  const brand = await Brand.findById(req.params.id);
-  if (!brand) {
-    return next(new ApiError("Brand not found", 404));
-  }
-
-  const existingBrand = await Brand.findOne({ slug: slugify(name) }).lean();
-  if (existingBrand && existingBrand._id.toString() !== req.params.id) {
-    return next(new ApiError("Brand name already exists", 400));
-  }
-
-  brand.name = name;
-  brand.image = image;
-  brand.slug = slugify(name);
-  brand.updatedAt = Date.now();
-  await brand.save();
-  res.status(200).json({
-    success: true,
-    message: "Brand updated successfully",
-    brand,
-  });
-});
+export const updateBrand = updateOne(Brand);
 
 // @desc Delete specific brand by ID
 // @route DELETE /api/v1/brands/:id
 // @access Public
-export const deleteBrand = asyncHandler(async (req, res, next) => {
-  const brand = await Brand.findByIdAndDelete(req.params.id);
-  if (!brand) {
-    return next(new ApiError("Brand not found", 404));
-  }
-  res.status(200).json({
-    success: true,
-    message: "Brand deleted successfully",
-  });
-});
+export const deleteBrand = deleteOne(Brand);
