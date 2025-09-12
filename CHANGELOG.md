@@ -1,3 +1,8 @@
+## 1.2.0 (2025-09-12)
+
+* feat: complete API for Brand, Category, and SubCategory (CRUD, validation, existence check, RESTful  ([404d807](https://github.com/SangTran13/ecommerce-api/commit/404d807)), closes [#41](https://github.com/SangTran13/ecommerce-api/issues/41)
+* chore(release-assets): update version & changelog for v1.1.1 (#39) ([e668793](https://github.com/SangTran13/ecommerce-api/commit/e668793)), closes [#39](https://github.com/SangTran13/ecommerce-api/issues/39)
+
 ## <small>1.1.1 (2025-09-11)</small>
 
 * refactor: test conventional commit (#38) ([9aa5dda](https://github.com/SangTran13/ecommerce-api/commit/9aa5dda)), closes [#38](https://github.com/SangTran13/ecommerce-api/issues/38)
