@@ -1,22 +1,38 @@
-import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import Category from "../models/categoryModel.js";
-import SubCategory from "../models/subCategoryModel.js";
 import ApiError from "../utils/apiError.js";
+import ApiFeatures from "../utils/apiFeatures.js";
+import qs from "qs";
+import { createOne, updateOne, deleteOne } from "./handlersFactory.js";
 
 // @description Get all categories
 // @route GET /api/v1/categories?page=...&limit=...
 // @access Public
 export const getCategories = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
-  const skip = (page - 1) * limit;
+  // Parse query string to nested object
+  const query = qs.parse(req._parsedUrl.query);
 
-  const categories = await Category.find({}).skip(skip).limit(limit).lean();
+  const countApiFeatures = new ApiFeatures(Category.find(), query)
+    .filter()
+    .searchByKeyword();
+
+  const documentsCount = await countApiFeatures.mongoQuery.countDocuments();
+
+  const apiFeatures = new ApiFeatures(Category.find().lean(), query)
+    .filter()
+    .searchByKeyword()
+    .paginate(documentsCount)
+    .limitFields()
+    .sort();
+
+  // Execute query
+  const { mongoQuery, paginationResult } = apiFeatures;
+  const categories = await mongoQuery;
+
   res.status(200).json({
     success: true,
     results: categories.length,
-    page,
+    pagination: paginationResult,
     categories,
   });
 });
@@ -38,63 +54,14 @@ export const getCategoryById = asyncHandler(async (req, res, next) => {
 // @description Create a new category
 // @route POST /api/v1/categories
 // @access Public
-export const createCategory = asyncHandler(async (req, res, next) => {
-  const { name, image } = req.body;
-
-  const existingCategory = await Category.findOne({
-    slug: slugify(name),
-  }).lean();
-  if (existingCategory) {
-    return next(new ApiError("Category name already exists", 400));
-  }
-
-  const newCategory = new Category({ name, slug: slugify(name), image });
-  await newCategory.save();
-  res.status(201).json({
-    success: true,
-    message: "Category created successfully",
-    category: newCategory,
-  });
-});
+export const createCategory = createOne(Category);
 
 // @desc Update specific category by ID
 // @route PUT /api/v1/categories/:id
 // @access Public
-export const updateCategory = asyncHandler(async (req, res, next) => {
-  const { name, image } = req.body;
-
-  const category = await Category.findById(req.params.id);
-  if (!category) {
-    return next(new ApiError("Category not found", 404));
-  }
-
-  const existingCategory = await Category.findOne({ slug: slugify(name) }).lean();
-  if (existingCategory && existingCategory._id.toString() !== req.params.id) {
-    return next(new ApiError("Category name already exists", 400));
-  }
-
-  category.name = name;
-  category.image = image;
-  category.slug = slugify(name);
-  category.updatedAt = Date.now();
-  await category.save();
-  res.status(200).json({
-    success: true,
-    message: "Category updated successfully",
-    category,
-  });
-});
+export const updateCategory = updateOne(Category);
 
 // @desc Delete specific category by ID
 // @route DELETE /api/v1/categories/:id
 // @access Public
-export const deleteCategory = asyncHandler(async (req, res, next) => {
-  const category = await Category.findByIdAndDelete(req.params.id);
-  if (!category) {
-    return next(new ApiError("Category not found", 404));
-  }
-  res.status(200).json({
-    success: true,
-    message: "Category deleted successfully",
-  });
-});
+export const deleteCategory = deleteOne(Category);
