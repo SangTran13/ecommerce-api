@@ -8,9 +8,12 @@ dotenv.config({ path: "config.env" });
 import ApiError from "./utils/apiError.js";
 import globalError from "./middlewares/errorMiddleware.js";
 import dbConnection from "./config/database.js";
+
+// Import route files
 import categoryRoute from "./routes/categoryRoute.js";
 import subCategoryRoute from "./routes/subCategoryRoute.js";
 import brandRoute from "./routes/brandRoute.js";
+import productRoute from "./routes/productRoute.js";
 
 // Connect to the database
 dbConnection();
@@ -31,6 +34,7 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/sub-categories", subCategoryRoute);
 app.use("/api/v1/brands", brandRoute);
+app.use("/api/v1/products", productRoute);
 
 // Handle undefined routes
 app.use((req, res, next) => {

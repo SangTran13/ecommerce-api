@@ -1,0 +1,137 @@
+### Base URL
+@baseUrl = http://localhost:8000/api/v1
+
+### ========== HEALTH ==========
+# Health check (root, expect 404 handler)
+GET {{baseUrl}}/
+
+### ========== CATEGORIES ==========
+# List categories (search + pagination + fields + sort)
+GET {{baseUrl}}/categories?keyword=elec&limit=5&page=1&fields=name,slug&sort=-createdAt
+
+# Create category
+POST {{baseUrl}}/categories
+Content-Type: application/json
+
+{
+  "name": "Electronics"
+}
+
+# Get category by ID
+GET {{baseUrl}}/categories/{{categoryId}}
+
+# Update category
+PUT {{baseUrl}}/categories/{{categoryId}}
+Content-Type: application/json
+
+{
+  "name": "Consumer Electronics"
+}
+
+# Delete category
+DELETE {{baseUrl}}/categories/{{categoryId}}
+
+### ========== SUB-CATEGORIES ==========
+# List all sub-categories (top-level)
+GET {{baseUrl}}/sub-categories?limit=10&page=1
+
+# Create sub-category (top-level, requires categoryId)
+POST {{baseUrl}}/sub-categories
+Content-Type: application/json
+
+{
+  "name": "Smartphones",
+  "category": "{{categoryId}}"
+}
+
+# Get sub-category by ID
+GET {{baseUrl}}/sub-categories/{{subCategoryId}}
+
+# Update sub-category
+PUT {{baseUrl}}/sub-categories/{{subCategoryId}}
+Content-Type: application/json
+
+{
+  "name": "Mobile Phones"
+}
+
+# Delete sub-category
+DELETE {{baseUrl}}/sub-categories/{{subCategoryId}}
+
+# Nested: List sub-categories under a category
+GET {{baseUrl}}/categories/{{categoryId}}/sub-categories
+
+# Nested: Create sub-category under a category
+POST {{baseUrl}}/categories/{{categoryId}}/sub-categories
+Content-Type: application/json
+
+{
+  "name": "Tablets"
+}
+
+# Nested: Delete ALL sub-categories of a category
+DELETE {{baseUrl}}/categories/{{categoryId}}/sub-categories
+
+### ========== BRANDS ==========
+# List brands
+GET {{baseUrl}}/brands?keyword=app&limit=5&page=1
+
+# Create brand
+POST {{baseUrl}}/brands
+Content-Type: application/json
+
+{
+  "name": "Apple"
+}
+
+# Get brand by ID
+GET {{baseUrl}}/brands/{{brandId}}
+
+# Update brand
+PUT {{baseUrl}}/brands/{{brandId}}
+Content-Type: application/json
+
+{
+  "name": "Apple Inc."
+}
+
+# Delete brand
+DELETE {{baseUrl}}/brands/{{brandId}}
+
+### ========== PRODUCTS ==========
+# List products with query (filter, sort, fields, pagination, keyword)
+GET {{baseUrl}}/products?keyword=iphone&limit=10&page=1&fields=title,price&sort=price,-createdAt
+
+# Create product
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{
+  "title": "iPhone 15",
+  "description": "Latest model with A17 chip, great camera, and long battery life.",
+  "quantity": 100,
+  "price": 999,
+  "imageCover": "https://example.com/iphone15.jpg",
+  "images": ["https://example.com/iphone15-1.jpg"],
+  "colors": ["black", "blue"],
+  "category": "{{categoryId}}",
+  "subCategories": ["{{subCategoryId}}"],
+  "brand": "{{brandId}}"
+}
+
+# Get product by ID
+GET {{baseUrl}}/products/{{productId}}
+
+# Update product
+PUT {{baseUrl}}/products/{{productId}}
+Content-Type: application/json
+
+{
+  "title": "iPhone 15 Pro",
+  "price": 1199,
+  "priceAfterDiscount": 1099,
+  "colors": ["black", "blue", "white"]
+}
+
+# Delete product
+DELETE {{baseUrl}}/products/{{productId}}
