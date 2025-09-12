@@ -1,6 +1,10 @@
 {
   "name": "@sangtran13/ecommerce-api",
+<<<<<<< HEAD
   "version": "1.2.0",
+=======
+  "version": "1.1.1",
+>>>>>>> 2b24b4f (feat: complete API for Brand, Category, and SubCategory (CRUD, validation, existence check, RESTful routes))
   "type": "module",
   "description": "",
   "main": "index.js",
