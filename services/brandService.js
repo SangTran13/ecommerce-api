@@ -65,4 +65,3 @@ export const updateBrand = updateOne(Brand);
 // @route DELETE /api/v1/brands/:id
 // @access Public
 export const deleteBrand = deleteOne(Brand);
-
