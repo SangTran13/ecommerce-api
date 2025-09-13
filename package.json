@@ -1,6 +1,6 @@
 {
   "name": "@sangtran13/ecommerce-api",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "type": "module",
   "description": "",
   "main": "index.js",
