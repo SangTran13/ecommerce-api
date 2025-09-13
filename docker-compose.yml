@@ -1,0 +1,48 @@
+# Docker Compose version 3.8 for modern features
+version: '3.8'
+
+services:
+  # Main application service
+  ecommerce-api:
+    # Use pre-built image from AWS ECR public registry
+    image: public.ecr.aws/u9a7t5u9/ecommerce-api:latest
+
+    # Container name for easy identification
+    container_name: ecommerce-api
+
+    # Port mapping: host:container
+    ports:
+      - "8000:8000"
+
+    # Environment variables for application configuration
+    environment:
+      - PORT=8000                    # Application port
+      - NODE_ENV=production          # Production environment
+      - DB_URI=${DB_URI}            # MongoDB connection string from .env file
+
+    # Restart policy for high availability
+    restart: unless-stopped
+
+    # Health check configuration
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/api/v1/categories"]
+      interval: 30s      # Check every 30 seconds
+      timeout: 10s       # Timeout after 10 seconds
+      retries: 3         # Retry 3 times before marking as unhealthy
+      start_period: 40s  # Wait 40 seconds before first health check
+
+    # Custom network for service isolation
+    networks:
+      - ecommerce-network
+
+    # Logging configuration to prevent log overflow
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"    # Maximum log file size
+        max-file: "3"      # Keep 3 log files
+
+# Custom network for better container communication
+networks:
+  ecommerce-network:
+    driver: bridge
