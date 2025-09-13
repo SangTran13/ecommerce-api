@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Brand schema definition
 const brandSchema = new mongoose.Schema(
   {
     name: {
@@ -23,6 +24,8 @@ const brandSchema = new mongoose.Schema(
 // Ensure case-insensitive uniqueness via slug
 brandSchema.index({ slug: 1 }, { unique: true });
 
+// Create and export the Brand model
 const brandModel = mongoose.model("Brand", brandSchema);
 
+// Export the Brand model
 export default brandModel;

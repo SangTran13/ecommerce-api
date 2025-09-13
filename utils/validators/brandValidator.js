@@ -1,14 +1,18 @@
 import { check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
 import slugify from "slugify";
+
 import Brand from "../../models/brandModel.js";
+
 import ApiError from "../apiError.js";
 
+// Get brand validator
 const getBrandValidator = [
   check("id").isMongoId().withMessage("Invalid brand ID format"),
   validatorMiddleware,
 ];
 
+// Create brand validator
 const createBrandValidator = [
   check("name")
     .notEmpty()
@@ -26,6 +30,7 @@ const createBrandValidator = [
   validatorMiddleware,
 ];
 
+// Update brand validator
 const updateBrandValidator = [
   check("id").isMongoId().withMessage("Invalid brand ID format"),
   async (req, _res, next) => {
@@ -54,11 +59,13 @@ const updateBrandValidator = [
   validatorMiddleware,
 ];
 
+// Delete brand validator
 const deleteBrandValidator = [
   check("id").isMongoId().withMessage("Invalid brand ID format"),
   validatorMiddleware,
 ];
 
+// Export all validators
 export {
   getBrandValidator,
   createBrandValidator,

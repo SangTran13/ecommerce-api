@@ -1,12 +1,15 @@
 import { check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
+
 import Category from "../../models/categoryModel.js";
 import SubCategory from "../../models/subCategoryModel.js";
 import Product from "../../models/productModel.js";
 import Brand from "../../models/brandModel.js";
+
 import slugify from "slugify";
 import ApiError from "../apiError.js";
 
+// Get product validator
 const getProductValidator = [
   check("id").isMongoId().withMessage("Invalid product ID format"),
   validatorMiddleware,
@@ -165,7 +168,9 @@ const updateProductValidator = [
   check("id").isMongoId().withMessage("Invalid product ID format"),
   // Preload product once to avoid duplicate DB reads in service
   async (req, _res, next) => {
-    const product = await Product.findById(req.params.id).select("category slug");
+    const product = await Product.findById(req.params.id).select(
+      "category slug"
+    );
     if (!product) {
       return next(new ApiError("Product not found", 404));
     }

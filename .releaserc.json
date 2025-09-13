@@ -1,30 +1,37 @@
 {
-  "branches": [
-    "main",
-    { "name": "dev", "prerelease": true }
-  ],
+  "branches": ["main", { "name": "dev", "prerelease": true }],
   "plugins": [
-    ["@semantic-release/commit-analyzer", {
-      "preset": "conventionalcommits",
-      "releaseRules": [
-        {"type": "refactor", "release": "patch"}
-      ]
-    }],
-    ["@semantic-release/release-notes-generator", {
-      "preset": "conventionalcommits",
-      "releaseRules": [
-        {"type": "refactor", "release": "patch"}
-      ]
-    }],
-    ["@semantic-release/changelog", {
-      "changelogFile": "CHANGELOG.md"
-    }],
-    ["@semantic-release/npm", {
-      "pkgRoot": "."
-    }],
-    ["@semantic-release/github", {
-      "assets": []
-    }]
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "conventionalcommits",
+        "releaseRules": [{ "type": "refactor", "release": "patch" }]
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "conventionalcommits",
+        "releaseRules": [{ "type": "refactor", "release": "patch" }]
+      }
+    ],
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "CHANGELOG.md"
+      }
+    ],
+    [
+      "@semantic-release/npm",
+      {
+        "pkgRoot": "."
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": []
+      }
+    ]
   ]
 }
-

@@ -1,0 +1,162 @@
+### Base URL
+@baseUrl = http://localhost:8000/api/v1
+
+### ========== HEALTH ==========
+# Health check (root, expect 404 handler)
+GET {{baseUrl}}/
+
+### ========== CATEGORIES ==========
+# Get all categories (search + pagination + fields + sort)
+GET {{baseUrl}}/categories?keyword=elec&limit=5&page=1&fields=name,slug,image&sort=-createdAt
+
+# Get category by ID
+GET {{baseUrl}}/categories/{{categoryId}}
+
+# Get sub-categories under category
+GET {{baseUrl}}/categories/{{categoryId}}/sub-categories
+
+# Create category
+POST {{baseUrl}}/categories
+Content-Type: application/json
+
+{
+  "name": "Electronics",
+  "slug": "electronics",
+  "image": "https://example.com/images/electronics.jpg"
+}
+
+# Update category
+PUT {{baseUrl}}/categories/{{categoryId}}
+Content-Type: application/json
+
+{
+  "name": "Consumer Electronics",
+  "slug": "consumer-electronics",
+  "image": "https://example.com/images/consumer-electronics.jpg"
+}
+
+# Delete category
+DELETE {{baseUrl}}/categories/{{categoryId}}
+
+# Delete ALL sub-categories by category ID
+DELETE {{baseUrl}}/categories/{{categoryId}}/sub-categories
+
+### ========== SUB-CATEGORIES ==========
+# Get all sub-categories
+GET {{baseUrl}}/sub-categories?page=1&limit=10
+
+# Get sub-category by ID
+GET {{baseUrl}}/sub-categories/{{subCategoryId}}
+
+# Create sub-category (under category)
+POST {{baseUrl}}/categories/{{categoryId}}/sub-categories
+Content-Type: application/json
+
+{
+  "name": "Smartphones",
+  "slug": "smartphones",
+  "category": "{{categoryId}}"
+}
+
+# Update sub-category
+PUT {{baseUrl}}/sub-categories/{{subCategoryId}}
+Content-Type: application/json
+
+{
+  "name": "Mobile Phones",
+  "slug": "mobile-phones",
+  "category": "{{categoryId}}"
+}
+
+# Delete sub-category
+DELETE {{baseUrl}}/sub-categories/{{subCategoryId}}
+
+### ========== BRANDS ==========
+# Get all brands
+GET {{baseUrl}}/brands?page=1&limit=20
+
+# Get brand by ID
+GET {{baseUrl}}/brands/{{brandId}}
+
+# Create brand
+POST {{baseUrl}}/brands
+Content-Type: application/json
+
+{
+  "name": "Apple",
+  "slug": "apple",
+  "image": "https://example.com/images/apple-logo.jpg"
+}
+
+# Update brand
+PUT {{baseUrl}}/brands/{{brandId}}
+Content-Type: application/json
+
+{
+  "name": "Apple Inc.",
+  "slug": "apple-inc",
+  "image": "https://example.com/images/apple-inc.jpg"
+}
+
+# Delete brand
+DELETE {{baseUrl}}/brands/{{brandId}}
+
+### ========== PRODUCTS ==========
+# Get all products (filter, sort, fields, pagination, keyword)
+GET {{baseUrl}}/products?keyword=iphone&limit=10&page=1&fields=title,price,ratingsAverage,ratingsQuantity&sort=price,-createdAt
+
+# Get product by ID
+GET {{baseUrl}}/products/{{productId}}
+
+# Create product
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{
+  "title": "iPhone 15",
+  "slug": "iphone-15",
+  "description": "Latest model with A17 chip, great camera, and long battery life.",
+  "quantity": 100,
+  "sold": 5,
+  "price": 999,
+  "priceAfterDiscount": 899,
+  "colors": ["black", "blue"],
+  "imageCover": "https://example.com/images/iphone15-cover.jpg",
+  "images": [
+    "https://example.com/images/iphone15-front.jpg",
+    "https://example.com/images/iphone15-back.jpg"
+  ],
+  "category": "{{categoryId}}",
+  "subCategories": ["{{subCategoryId}}"],
+  "brand": "{{brandId}}",
+  "ratingsAverage": 4.8,
+  "ratingsQuantity": 125
+}
+
+# Update product
+PUT {{baseUrl}}/products/{{productId}}
+Content-Type: application/json
+
+{
+  "title": "iPhone 15 Pro",
+  "slug": "iphone-15-pro",
+  "description": "The Pro model with titanium frame, telephoto zoom, and advanced performance.",
+  "quantity": 80,
+  "sold": 10,
+  "price": 1199,
+  "priceAfterDiscount": 1099,
+  "colors": ["black", "blue", "white"],
+  "imageCover": "https://example.com/images/iphone15pro-cover.jpg",
+  "images": [
+    "https://example.com/images/iphone15pro-front.jpg",
+    "https://example.com/images/iphone15pro-back.jpg"
+  ],
+  "category": "{{categoryId}}",
+  "subCategories": ["{{subCategoryId}}"],
+  "brand": "{{brandId}}",
+  "ratingsAverage": 4.9,
+  "ratingsQuantity": 240
+}
+
+# Delete product
+DELETE {{baseUrl}}/products/{{productId}}

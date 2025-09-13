@@ -1,14 +1,18 @@
 import { check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
+
 import Category from "../../models/categoryModel.js";
+
 import slugify from "slugify";
 import ApiError from "../apiError.js";
 
+// Get category validator
 const getCategoryValidator = [
   check("id").isMongoId().withMessage("Invalid category ID format"),
   validatorMiddleware,
 ];
 
+// Create category validator
 const createCategoryValidator = [
   check("name")
     .notEmpty()
@@ -26,6 +30,7 @@ const createCategoryValidator = [
   validatorMiddleware,
 ];
 
+// Update category validator
 const updateCategoryValidator = [
   check("id").isMongoId().withMessage("Invalid category ID format"),
   async (req, _res, next) => {
@@ -54,11 +59,13 @@ const updateCategoryValidator = [
   validatorMiddleware,
 ];
 
+// Delete category validator
 const deleteCategoryValidator = [
   check("id").isMongoId().withMessage("Invalid category ID format"),
   validatorMiddleware,
 ];
 
+// Export all validators
 export {
   getCategoryValidator,
   createCategoryValidator,

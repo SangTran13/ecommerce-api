@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Product schema definition
 const productSchema = new mongoose.Schema(
   {
     title: {
@@ -68,7 +69,12 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 // Ensure slug is unique (define index before model compilation)
 productSchema.index({ slug: 1 }, { unique: true });
 
-export default mongoose.model("Product", productSchema);
+// Create and export the Product model
+const productModel = mongoose.model("Product", productSchema);
+
+// Export the Product model
+export default productModel;
