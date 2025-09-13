@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Category schema definition
 const categorySchema = new mongoose.Schema(
   {
     name: {
@@ -23,6 +24,8 @@ const categorySchema = new mongoose.Schema(
 // Ensure case-insensitive uniqueness via slug
 categorySchema.index({ slug: 1 }, { unique: true });
 
+// Create and export the Category model
 const categoryModel = mongoose.model("Category", categorySchema);
 
+// Export the Category model
 export default categoryModel;

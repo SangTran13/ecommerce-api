@@ -1,1 +1,1 @@
-# ecommerce-api
+# e-commerce-api

@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   getCategoryValidator,
   createCategoryValidator,
@@ -26,10 +27,13 @@ router
   .route("/")
   .get(getCategories)
   .post(createCategoryValidator, createCategory);
+
+// Define routes for getting, updating, and deleting a specific category by ID
 router
   .route("/:id")
   .get(getCategoryValidator, getCategoryById)
   .put(updateCategoryValidator, updateCategory)
   .delete(deleteCategoryValidator, deleteCategory);
 
+// Export the router
 export default router;

@@ -3,10 +3,16 @@ import ApiError from "../utils/apiError.js";
 
 import Category from "../models/categoryModel.js";
 import SubCategory from "../models/subCategoryModel.js";
-import ApiFeatures from "../utils/apiFeatures.js";
-import qs from "qs";
-import { createOne, updateOne, deleteOne } from "./handlersFactory.js";
 
+import {
+  getAll,
+  getOne,
+  createOne,
+  updateOne,
+  deleteOne,
+} from "./handlersFactory.js";
+
+// Middleware to set category ID to body if not provided
 export const setCategoryIdToBody = (req, _res, next) => {
   // If the request is coming from a nested route, set the category from params
   if (!req.body.category && req.params.categoryId) {
@@ -27,55 +33,15 @@ export const getSubCategoriesByCategory = (req, _res, next) => {
 // @description Get all subCategories
 // @route GET /api/v1/sub-categories?page=...&limit=...
 // @access Public
-export const getSubCategories = asyncHandler(async (req, res) => {
-  // Parse query string to nested object
-  const query = qs.parse(req._parsedUrl.query);
-
-  const countApiFeatures = new ApiFeatures(
-    SubCategory.find(req.filterObject),
-    query
-  )
-    .filter()
-    .searchByKeyword("SubCategory");
-
-  const documentsCount = await countApiFeatures.mongoQuery.countDocuments();
-
-  const apiFeatures = new ApiFeatures(
-    SubCategory.find(req.filterObject).populate("category", "name").lean(),
-    query
-  )
-    .filter()
-    .searchByKeyword("SubCategory")
-    .paginate(documentsCount)
-    .limitFields()
-    .sort();
-
-  // Execute query
-  const { mongoQuery, paginationResult } = apiFeatures;
-  const subCategories = await mongoQuery;
-
-  res.status(200).json({
-    success: true,
-    results: subCategories.length,
-    pagination: paginationResult,
-    subCategories,
-  });
+export const getSubCategories = getAll(SubCategory, "SubCategory", {
+  populate: { path: "category", select: "name -_id" },
 });
 
 // @desc Get specific subCategory by ID
 // @route GET /api/v1/sub-categories/:id
 // @access Public
-export const getSubCategoryById = asyncHandler(async (req, res, next) => {
-  const subCategory = await SubCategory.findById(req.params.id)
-    .populate("category", "name -_id")
-    .lean();
-  if (!subCategory) {
-    return next(new ApiError("SubCategory not found", 404));
-  }
-  res.status(200).json({
-    success: true,
-    subCategory,
-  });
+export const getSubCategoryById = getOne(SubCategory, {
+  populate: { path: "category", select: "name -_id" },
 });
 
 // @desc Create a new subCategory

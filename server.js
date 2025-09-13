@@ -5,6 +5,7 @@ import morgan from "morgan";
 // Load environment variables from config.env file
 dotenv.config({ path: "config.env" });
 
+// Import custom modules
 import ApiError from "./utils/apiError.js";
 import globalError from "./middlewares/errorMiddleware.js";
 import dbConnection from "./config/database.js";

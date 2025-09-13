@@ -1,15 +1,19 @@
 import { check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
+
 import Category from "../../models/categoryModel.js";
 import SubCategory from "../../models/subCategoryModel.js";
+
 import slugify from "slugify";
 import ApiError from "../apiError.js";
 
+// Get sub-category validator
 const getSubCategoryValidator = [
   check("id").isMongoId().withMessage("Invalid sub-category ID format"),
   validatorMiddleware,
 ];
 
+// Create sub-category validator
 const createSubCategoryValidator = [
   check("name")
     .notEmpty()
@@ -17,13 +21,14 @@ const createSubCategoryValidator = [
     .isLength({ min: 2, max: 32 })
     .withMessage("Sub-category name must be between 2 and 32 characters")
     .custom((value, { req }) =>
-      SubCategory.findOne({ slug: slugify(value), category: req.body.category }).then(
-        (sub) => {
-          if (sub) {
-            return Promise.reject(new Error("SubCategory already exists"));
-          }
+      SubCategory.findOne({
+        slug: slugify(value),
+        category: req.body.category,
+      }).then((sub) => {
+        if (sub) {
+          return Promise.reject(new Error("SubCategory already exists"));
         }
-      )
+      })
     ),
   check("category")
     .notEmpty()
@@ -40,10 +45,13 @@ const createSubCategoryValidator = [
   validatorMiddleware,
 ];
 
+// Update sub-category validator
 const updateSubCategoryValidator = [
   check("id").isMongoId().withMessage("Invalid sub-category ID format"),
   async (req, _res, next) => {
-    const sub = await SubCategory.findById(req.params.id).select("category slug");
+    const sub = await SubCategory.findById(req.params.id).select(
+      "category slug"
+    );
     if (!sub) {
       return next(new ApiError("SubCategory not found", 404));
     }
@@ -55,15 +63,17 @@ const updateSubCategoryValidator = [
     .isLength({ min: 2, max: 32 })
     .withMessage("Sub-category name must be between 2 and 32 characters")
     .custom((value, { req }) => {
-      const categoryId = req.body.category || (req.subCategory && req.subCategory.category);
+      const categoryId =
+        req.body.category || (req.subCategory && req.subCategory.category);
       if (!categoryId) return true;
-      return SubCategory.findOne({ slug: slugify(value), category: categoryId }).then(
-        (sub) => {
-          if (sub && sub._id.toString() !== req.params.id) {
-            return Promise.reject(new Error("SubCategory already exists"));
-          }
+      return SubCategory.findOne({
+        slug: slugify(value),
+        category: categoryId,
+      }).then((sub) => {
+        if (sub && sub._id.toString() !== req.params.id) {
+          return Promise.reject(new Error("SubCategory already exists"));
         }
-      );
+      });
     }),
   check("category")
     .optional()
@@ -79,16 +89,19 @@ const updateSubCategoryValidator = [
   validatorMiddleware,
 ];
 
+// Delete sub-category validator
 const deleteSubCategoryValidator = [
   check("id").isMongoId().withMessage("Invalid sub-category ID format"),
   validatorMiddleware,
 ];
 
+// Delete sub-categories by category validator
 const deleteSubCategoriesByCategoryValidator = [
   check("categoryId").isMongoId().withMessage("Invalid category ID format"),
   validatorMiddleware,
 ];
 
+// Export all validators
 export {
   getSubCategoryValidator,
   createSubCategoryValidator,
