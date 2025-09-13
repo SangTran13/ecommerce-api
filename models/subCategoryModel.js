@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Sub-category schema definition
 const subCategorySchema = new mongoose.Schema(
   {
     name: {
@@ -26,6 +27,8 @@ const subCategorySchema = new mongoose.Schema(
 // Ensure case-insensitive uniqueness via slug
 subCategorySchema.index({ category: 1, slug: 1 }, { unique: true });
 
-const SubCategory = mongoose.model("SubCategory", subCategorySchema);
+// Create and export the SubCategory model
+const subCategoryModel = mongoose.model("SubCategory", subCategorySchema);
 
-export default SubCategory;
+// Export the SubCategory model
+export default subCategoryModel;

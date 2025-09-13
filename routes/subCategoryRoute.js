@@ -22,6 +22,7 @@ import {
 // Merge params to access categoryId from parent route
 const router = express.Router({ mergeParams: true });
 
+// Define routes for getting all sub-categories and creating a new sub-category
 router
   .route("/")
   .get(getSubCategoriesByCategory, getSubCategories)
@@ -30,10 +31,13 @@ router
     deleteSubCategoriesByCategoryValidator,
     deleteSubCategoriesByCategory
   );
+
+// Define routes for getting, updating, and deleting a specific sub-category by ID
 router
   .route("/:id")
   .get(getSubCategoryValidator, getSubCategoryById)
   .put(updateSubCategoryValidator, updateSubCategory)
   .delete(deleteSubCategoryValidator, deleteSubCategory);
 
+// Export the router
 export default router;
