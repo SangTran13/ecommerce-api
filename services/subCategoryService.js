@@ -30,8 +30,9 @@ export const getSubCategoriesByCategory = (req, _res, next) => {
   next();
 };
 
-// @description Get all subCategories
+// @desc Get all subCategories
 // @route GET /api/v1/sub-categories?page=...&limit=...
+// @route GET /api/v1/categories/:categoryId/sub-categories
 // @access Public
 export const getSubCategories = getAll(SubCategory, "SubCategory", {
   populate: { path: "category", select: "name -_id" },

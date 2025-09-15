@@ -1,3 +1,5 @@
+import ApiError from "../utils/apiError.js";
+
 // Global error handling middleware
 const globalError = (err, _req, res, _next) => {
   err.statusCode = err.statusCode || 500;
@@ -10,11 +12,36 @@ const globalError = (err, _req, res, _next) => {
     err.isOperational = true;
     err.message = formatDuplicateKeyError(err);
   }
+
   if (process.env.NODE_ENV === "development") {
+    // Handle JWT errors
+    const jwtError = handleJwtErrors(err);
+    if (jwtError) {
+      return sendErrorForDev(jwtError, res);
+    }
+
     sendErrorForDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
+    // Handle JWT errors
+    const jwtError = handleJwtErrors(err);
+    if (jwtError) {
+      return sendErrorForProd(jwtError, res);
+    }
+
     sendErrorForProd(err, res);
   }
+};
+
+// Handler JWT errors
+const handleJwtErrors = (err) => {
+  if (err.name === "JsonWebTokenError") {
+    return new ApiError("Invalid token. Please log in again!", 401);
+  } else if (err.name === "TokenExpiredError") {
+    return new ApiError("Your token has expired! Please log in again.", 401);
+  } else if (err.name === "NotBeforeError") {
+    return new ApiError("Token not active. Please log in again.", 401);
+  }
+  return err;
 };
 
 // Helper functions
