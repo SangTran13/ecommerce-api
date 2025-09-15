@@ -19,6 +19,8 @@ import {
   deleteSubCategoriesByCategoryValidator,
 } from "../utils/validators/subCategoryValidator.js";
 
+import { protect, allowedTo } from "../services/authService.js";
+
 // Merge params to access categoryId from parent route
 const router = express.Router({ mergeParams: true });
 
@@ -26,8 +28,16 @@ const router = express.Router({ mergeParams: true });
 router
   .route("/")
   .get(getSubCategoriesByCategory, getSubCategories)
-  .post(setCategoryIdToBody, createSubCategoryValidator, createSubCategory)
+  .post(
+    protect,
+    allowedTo("admin", "manager"),
+    setCategoryIdToBody,
+    createSubCategoryValidator,
+    createSubCategory
+  )
   .delete(
+    protect,
+    allowedTo("admin"),
     deleteSubCategoriesByCategoryValidator,
     deleteSubCategoriesByCategory
   );
@@ -36,8 +46,18 @@ router
 router
   .route("/:id")
   .get(getSubCategoryValidator, getSubCategoryById)
-  .put(updateSubCategoryValidator, updateSubCategory)
-  .delete(deleteSubCategoryValidator, deleteSubCategory);
+  .put(
+    protect,
+    allowedTo("admin", "manager"),
+    updateSubCategoryValidator,
+    updateSubCategory
+  )
+  .delete(
+    protect,
+    allowedTo("admin"),
+    deleteSubCategoryValidator,
+    deleteSubCategory
+  );
 
 // Export the router
 export default router;

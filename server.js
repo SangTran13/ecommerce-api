@@ -9,15 +9,19 @@ dotenv.config({ path: "config.env" });
 import ApiError from "./utils/apiError.js";
 import globalError from "./middlewares/errorMiddleware.js";
 import dbConnection from "./config/database.js";
+import { connectRedis } from "./config/redis.js";
 
 // Import route files
 import categoryRoute from "./routes/categoryRoute.js";
 import subCategoryRoute from "./routes/subCategoryRoute.js";
 import brandRoute from "./routes/brandRoute.js";
 import productRoute from "./routes/productRoute.js";
+import userRoute from "./routes/userRoute.js";
+import authRoute from "./routes/authRoute.js";
 
-// Connect to the database
+// Connect to the database and Redis
 dbConnection();
+connectRedis();
 
 // Create an Express application
 const app = express();
@@ -31,14 +35,16 @@ if (process.env.NODE_ENV === "development") {
   console.log(`mode: ${process.env.NODE_ENV}`);
 }
 
-// Mount the category routes
+// Mount routes
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/sub-categories", subCategoryRoute);
 app.use("/api/v1/brands", brandRoute);
 app.use("/api/v1/products", productRoute);
+app.use("/api/v1/users", userRoute);
+app.use("/api/v1/auth", authRoute);
 
 // Handle undefined routes
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   next(new ApiError(`Can't find this route: ${req.originalUrl}`, 404));
 });
 
