@@ -17,14 +17,23 @@
     "access": "public"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "crypto": "^1.0.1",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
     "express-validator": "^7.2.1",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
     "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.6",
     "qs": "^6.14.0",
-    "slugify": "^1.6.6"
+    "redis": "^5.8.2",
+    "sharp": "^0.34.3",
+    "slugify": "^1.6.6",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",

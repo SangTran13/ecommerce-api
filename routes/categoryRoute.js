@@ -15,6 +15,8 @@ import {
   deleteCategory,
 } from "../services/categoryService.js";
 
+import { protect, allowedTo } from "../services/authService.js";
+
 import subCategoriesRoute from "./subCategoryRoute.js";
 
 const router = express.Router();
@@ -26,14 +28,24 @@ router.use("/:categoryId/sub-categories", subCategoriesRoute);
 router
   .route("/")
   .get(getCategories)
-  .post(createCategoryValidator, createCategory);
+  .post(
+    protect,
+    allowedTo("admin", "manager"),
+    createCategoryValidator,
+    createCategory
+  );
 
 // Define routes for getting, updating, and deleting a specific category by ID
 router
   .route("/:id")
   .get(getCategoryValidator, getCategoryById)
-  .put(updateCategoryValidator, updateCategory)
-  .delete(deleteCategoryValidator, deleteCategory);
+  .put(
+    protect,
+    allowedTo("admin", "manager"),
+    updateCategoryValidator,
+    updateCategory
+  )
+  .delete(protect, allowedTo("admin"), deleteCategoryValidator, deleteCategory);
 
 // Export the router
 export default router;

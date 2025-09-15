@@ -1,5 +1,5 @@
 # Docker Compose version 3.8 for modern features
-version: '3.8'
+version: "3.8"
 
 services:
   # Main application service
@@ -16,20 +16,36 @@ services:
 
     # Environment variables for application configuration
     environment:
-      - PORT=8000                    # Application port
-      - NODE_ENV=production          # Production environment
-      - DB_URI=${DB_URI}            # MongoDB connection string from .env file
+      - PORT=8000 # Application port
+      - NODE_ENV=production # Production environment
+      - DB_URI=${DB_URI} # MongoDB connection string from .env file
+      - REDIS_URL=${REDIS_URL} # Redis connection string from .env file
+      - JWT_SECRET=${JWT_SECRET} # JWT secret key from .env file
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN} # JWT expiration time
+      - EMAIL_HOST=${EMAIL_HOST} # Email service host
+      - EMAIL_PORT=${EMAIL_PORT} # Email service port
+      - EMAIL_USERNAME=${EMAIL_USERNAME} # Email service username
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD} # Email service password
+      - EMAIL_FROM=${EMAIL_FROM} # Default "from" email address
 
     # Restart policy for high availability
     restart: unless-stopped
 
     # Health check configuration
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/api/v1/categories"]
-      interval: 30s      # Check every 30 seconds
-      timeout: 10s       # Timeout after 10 seconds
-      retries: 3         # Retry 3 times before marking as unhealthy
-      start_period: 40s  # Wait 40 seconds before first health check
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8000/api/v1/categories",
+        ]
+      interval: 30s # Check every 30 seconds
+      timeout: 10s # Timeout after 10 seconds
+      retries: 3 # Retry 3 times before marking as unhealthy
+      start_period: 40s # Wait 40 seconds before first health check
 
     # Custom network for service isolation
     networks:
@@ -39,8 +55,8 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"    # Maximum log file size
-        max-file: "3"      # Keep 3 log files
+        max-size: "10m" # Maximum log file size
+        max-file: "3" # Keep 3 log files
 
 # Custom network for better container communication
 networks:

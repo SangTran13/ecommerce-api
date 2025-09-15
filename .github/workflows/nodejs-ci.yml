@@ -38,4 +38,3 @@ jobs:
       - name: Test (skip if not configured)
         run: |
           npm test --if-present || echo "test script not present, skipping"
-

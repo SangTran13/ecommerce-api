@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 // Database connection function
 const dbConnection = () => {
   mongoose.connect(process.env.DB_URI).then((con) => {
-    console.log("DB connection successful");
+    console.log("DB Connection Successful");
   });
 };
 
